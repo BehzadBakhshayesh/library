@@ -52,7 +52,8 @@ public class Main {
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid year! Please enter a number.");
                         input.nextLine();
-                        continue;
+                    }catch (LibraryException e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 2:
