@@ -81,8 +81,8 @@ public class Main {
                     break;
                 case 4:
                     try {
-                        System.out.print("Enter book number: ");
-                        int editBookNumber = input.nextInt();
+                        System.out.print("Enter Book ID: ");
+                        int bookId = input.nextInt();
                         input.nextLine();
                         System.out.print("Edit your book name: ");
                         String selectedTitle = input.nextLine();
@@ -91,7 +91,7 @@ public class Main {
                         System.out.print("Edit your book year: ");
                         int selectedYear = input.nextInt();
                         input.nextLine();
-                        library.editBook(editBookNumber, selectedTitle, selectedAuthor, selectedYear);
+                        library.editBook(bookId, selectedTitle, selectedAuthor, selectedYear);
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
@@ -101,10 +101,10 @@ public class Main {
                     break;
                 case 5:
                     try {
-                        System.out.print("Enter book number: ");
-                        int removeBookNumber = input.nextInt();
+                        System.out.print("Enter book ID: ");
+                        int bookId = input.nextInt();
                         input.nextLine();
-                        library.deleteBook(removeBookNumber);
+                        library.deleteBook(bookId);
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid book number! Please enter a number.");
                         input.nextLine();
@@ -114,11 +114,15 @@ public class Main {
                     }
                     break;
                 case 6:
+                    try {
                         System.out.print("Enter name: ");
                         String name = input.nextLine();
                         System.out.print("Enter email: ");
                         String email = input.nextLine();
                         library.addMember(name, email);
+                    } catch (LibraryException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 7:
                     ArrayList<Member> membersList = library.showMembers();
@@ -178,13 +182,13 @@ public class Main {
                     break;
                 case 11:
                     try {
-                        System.out.print("Enter Book Number: ");
-                        int bookNumber = input.nextInt();
+                        System.out.print("Enter Book ID: ");
+                        int bookId = input.nextInt();
                         input.nextLine();
                         System.out.print("Enter Member id: ");
                         int memberId = input.nextInt();
                         input.nextLine();
-                        library.borrowBook(bookNumber, memberId);
+                        library.borrowBook(bookId, memberId);
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
@@ -195,13 +199,13 @@ public class Main {
                     break;
                 case 12:
                     try {
-                        System.out.print("Enter Book Number: ");
-                        int bookNumber = input.nextInt();
+                        System.out.print("Enter Book ID: ");
+                        int bookId = input.nextInt();
                         input.nextLine();
                         System.out.print("Enter Member id: ");
                         int memberId = input.nextInt();
                         input.nextLine();
-                        library.returnBook(bookNumber, memberId);
+                        library.returnBook(bookId, memberId);
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();

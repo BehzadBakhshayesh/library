@@ -5,11 +5,19 @@ import java.util.ArrayList;
 public class Library {
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Member> members = new ArrayList<>();
-    private static int nextId = 1;
 
     public void addBook(String title, String author, int year) {
-        Book newBook = new Book(title, author, year);
+        Book newBook = new Book( title, author, year);
         this.books.add(newBook);
+    }
+
+    public Book findBookById(long id) {
+        for (Book book : books) {
+            if (book.getId() == id) {
+                return book;
+            }
+        }
+        return null;
     }
 
     public ArrayList<Book> showBooks() {
@@ -27,31 +35,41 @@ public class Library {
         return new ArrayList<>(searchList);
     }
 
-    public void editBook(int bookNumber, String title, String author, int year) {
-        if (bookNumber >= 1 && bookNumber <= this.books.size()) {
-            Book foundBook = this.books.get(bookNumber - 1);
-            foundBook.setTitle(title);
-            foundBook.setAuthor(author);
-            foundBook.setYear(year);
-            System.out.print(foundBook.toString());
-            System.out.println("Book edit successfully!");
-        } else {
-            throw new LibraryException("An error occurred while editing the book! The number is invalid.");
+    public void editBook(long bookId, String title, String author, int year) {
+        Book foundBook = this.findBookById(bookId);
+        if (foundBook == null) {
+            throw new LibraryException("Book not found! Invalid ID.");
         }
+        if (title == null || title.isBlank()) {
+            throw new LibraryException("Title can not be blank");
+        }
+        if (author == null || author.isBlank()) {
+            throw new LibraryException("Author can not be blank");
+        }
+        if (year < 1 || year > 2026) {
+            throw new LibraryException("Year is not valid");
+        }
+
+        foundBook.setTitle(title);
+        foundBook.setAuthor(author);
+        foundBook.setYear(year);
+        System.out.println(foundBook);
+        System.out.println("Book edit successfully!");
+
     }
 
-    public void deleteBook(int bookNumber) {
-        if (bookNumber >= 1 && bookNumber <= this.books.size()) {
-            this.books.remove(bookNumber - 1);
-            System.out.println("Book deleted successfully!");
-        } else {
+    public void deleteBook(long bookId) {
+        Book foundBook = this.findBookById(bookId);
+        if (foundBook == null) {
             throw new LibraryException("An error occurred while deleting the book! The number is invalid.");
         }
+        this.books.remove(foundBook);
+        System.out.println("Book deleted successfully!");
+
     }
 
     public void addMember(String name, String email) {
-        int id = nextId++;
-        Member member = new Member(id, name, email);
+        Member member = new Member(name, email);
         this.members.add(member);
     }
 
@@ -70,7 +88,7 @@ public class Library {
         return new ArrayList<Member>(searchList);
     }
 
-    public Member findMemberById(int id) {
+    public Member findMemberById(long id) {
         for (Member member : members) {
             if (member.getId() == id) {
                 return member;
@@ -79,57 +97,61 @@ public class Library {
         return null;
     }
 
-    public void editMember(int id, String name, String email) {
+    public void editMember(long id, String name, String email) {
         Member foundMember = this.findMemberById(id);
-        if (foundMember != null) {
-            foundMember.setName(name);
-            foundMember.setEmail(email);
-            System.out.println("Member edited successfully!");
-        } else {
+        if (foundMember == null) {
             throw new LibraryException("Member not found!");
         }
+        if (name == null || name.isBlank()) {
+            throw new LibraryException("Name can not be blank");
+        }
+        if (!Member.isValidEmail(email)) {
+            throw new LibraryException("Email is not valid");
+        }
+        foundMember.setName(name);
+        foundMember.setEmail(email);
+        System.out.println("Member edited successfully!");
+
     }
 
-    public void deleteMember(int id) {
+    public void deleteMember(long id) {
         Member foundMember = this.findMemberById(id);
-        if (foundMember != null) {
-            if (foundMember.borrowedBooks().size() > 0) {
-                throw new LibraryException("The member has borrowed a book!");
-            }
-            this.members.remove(foundMember);
-            System.out.println("Member deleted successfully!");
-
-        } else {
+        if (foundMember == null) {
             throw new LibraryException("Member not found!");
         }
+        if (foundMember.borrowedBooks().size() > 0) {
+            throw new LibraryException("The member has borrowed a book!");
+        }
+        this.members.remove(foundMember);
+        System.out.println("Member deleted successfully!");
+
+
     }
 
-    public void borrowBook(int bookNumber, int memberId) {
-        if (bookNumber >= 1 && bookNumber <= this.books.size()) {
-            Book foundBook = this.books.get(bookNumber - 1);
-            if (foundBook.isAvailable()) {
-                Member foundMember = this.findMemberById(memberId);
-                if (foundMember == null) {
-                    throw new LibraryException("Member not found!");
-                }
-                foundBook.setIsAvailable(false);
-                foundMember.addBorrowedBooks(foundBook);
-                System.out.println("Book borrowed successfully!");
-
-            } else {
-                throw new LibraryException("Book is already borrowed!");
-            }
-        } else {
+    public void borrowBook(long bookId, long memberId) {
+        Book foundBook = this.findBookById(bookId);
+        if (foundBook == null) {
             throw new LibraryException("Book not found!");
         }
+        if (!foundBook.isAvailable()) {
+            throw new LibraryException("Book is already borrowed!");
+        }
+
+        Member foundMember = this.findMemberById(memberId);
+        if (foundMember == null) {
+            throw new LibraryException("Member not found!");
+        }
+        foundBook.setIsAvailable(false);
+        foundMember.addBorrowedBooks(foundBook);
+        System.out.println("Book borrowed successfully!");
     }
 
-    public void returnBook(int bookNumber, int memberId) {
+    public void returnBook(long bookId, long memberId) {
 
-        if (bookNumber < 1 || bookNumber > this.books.size()) {
+        Book foundBook = this.findBookById(bookId);
+        if (foundBook == null) {
             throw new LibraryException("Book not found!");
         }
-        Book foundBook = this.books.get(bookNumber - 1);
         if (foundBook.isAvailable()) {
             throw new LibraryException("Book is not borrowed!");
         }
