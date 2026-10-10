@@ -3,41 +3,32 @@ package library;
 import java.io.*;
 
 public class FileManager {
-
-    private File file;
-
-    public FileManager(String pathname) {
-        this.file = new File(pathname);
-    }
-
-    public void save(String text, boolean append) {
-        try (FileWriter writer = new FileWriter(file, append)) {
+    public void saveText(String path, String text) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, false))) {
             writer.write(text);
+            writer.newLine();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
+
     }
 
-    public String load() {
-        try (
-                FileReader fileReader = new FileReader(file);
-                BufferedReader bufferedReader = new BufferedReader(fileReader)
-        ) {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            String line = bufferedReader.readLine();
-
-            while (line != null) {
-                stringBuilder.append(line);
-                stringBuilder.append(System.lineSeparator());
-                line = bufferedReader.readLine();
+    public String loadText(String path) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
             }
 
-            return stringBuilder.toString();
+            return  content.toString();
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return "";
+            throw new RuntimeException(e);
         }
+
     }
 }
+//FileManager fileManager= new FileManager();
+//fileManager.saveText("test.txt", "Hello world");
+//System.out.println(fileManager.loadText("test.txt"));

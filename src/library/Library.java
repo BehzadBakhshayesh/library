@@ -1,6 +1,7 @@
 package library;
 
 import java.util.ArrayList;
+import java.time.Year;
 
 public class Library {
     private ArrayList<Book> books = new ArrayList<>();
@@ -46,7 +47,7 @@ public class Library {
         if (author == null || author.isBlank()) {
             throw new LibraryException("Author can not be blank");
         }
-        if (year < 1 || year > 2026) {
+        if (year < 1 || year > Year.now().getValue()) {
             throw new LibraryException("Year is not valid");
         }
 
@@ -62,6 +63,9 @@ public class Library {
         Book foundBook = this.findBookById(bookId);
         if (foundBook == null) {
             throw new LibraryException("An error occurred while deleting the book! The number is invalid.");
+        }
+        if (!foundBook.isAvailable()) {
+            throw new LibraryException("Book is already borrowed!");
         }
         this.books.remove(foundBook);
         System.out.println("Book deleted successfully!");
@@ -119,13 +123,11 @@ public class Library {
         if (foundMember == null) {
             throw new LibraryException("Member not found!");
         }
-        if (foundMember.borrowedBooks().size() > 0) {
+        if (!foundMember.borrowedBooks().isEmpty()) {
             throw new LibraryException("The member has borrowed a book!");
         }
         this.members.remove(foundMember);
         System.out.println("Member deleted successfully!");
-
-
     }
 
     public void borrowBook(long bookId, long memberId) {

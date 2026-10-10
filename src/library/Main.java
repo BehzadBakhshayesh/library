@@ -32,7 +32,7 @@ public class Main {
             byte choice;
             try {
                 choice = input.nextByte();
-            } catch (InputMismatchException  e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Invalid input! Please enter a number.");
                 input.nextLine();
                 continue;
@@ -52,7 +52,7 @@ public class Main {
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid year! Please enter a number.");
                         input.nextLine();
-                    }catch (LibraryException e) {
+                    } catch (LibraryException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
@@ -194,7 +194,7 @@ public class Main {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
                         continue;
-                    }catch (LibraryException e){
+                    } catch (LibraryException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
@@ -211,7 +211,7 @@ public class Main {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
                         continue;
-                    }catch (LibraryException e){
+                    } catch (LibraryException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
@@ -223,6 +223,5 @@ public class Main {
                     System.out.println("Invalid input! Please enter a number.");
             }
         }
-
     }
 }

@@ -1,4 +1,5 @@
 package library;
+import java.time.Year;
 
 public class Book {
     private final long id;
@@ -14,7 +15,7 @@ public class Book {
         if (author == null || author.isBlank()) {
             throw new LibraryException("Author can not be blank");
         }
-        if (year < 1 || year > 2026) {
+        if (year < 1 || year > Year.now().getValue()) {
             throw new LibraryException("Year is not valid");
         }
         this.id = IdGenerator.generateBookId();
@@ -55,7 +56,7 @@ public class Book {
     }
 
     public void setYear(int year) {
-        if (year < 1 || year > 2026) {
+        if (year < 1 || year > Year.now().getValue()) {
             throw new LibraryException("Year is not valid");
         }
         this.year = year;
