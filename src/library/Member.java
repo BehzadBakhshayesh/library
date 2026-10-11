@@ -82,7 +82,6 @@ public class Member {
         return borrowedBooks.contains(book);
     }
 
-
     public String toFileLine() {
         String ids = this.borrowedBooks.stream()
                 .map(book -> String.valueOf(book.getId()))

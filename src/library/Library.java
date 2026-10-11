@@ -1,9 +1,12 @@
 package library;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.time.Year;
 
 public class Library {
+    private final String BOOKS_FILE="books.txt";
+    private final String MEMBERS_FILE="members.txt";
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Member> members = new ArrayList<>();
 
@@ -186,21 +189,46 @@ public class Library {
 
     public void load() {
         FileManager fileManager = new FileManager();
-        // 1. اگر books.txt وجود دارد:
-        //      books.clear()
-        //      متن را بخوان، به خطوط بشکن، خطوط خالی را رد کن
-        //      برای هر خط: Book.fromFileLine(line) → books.add(...)
-        //      maxBookId را نگه دار → IdGenerator.setBookCounter(maxBookId + 1)
+        this.books.clear();
+        this.members.clear();
 
-        // 2. اگر members.txt وجود دارد:
-        //      members.clear()
-        //      برای هر خط:
-        //          Member m = Member.fromFileLine(line)
-        //          ArrayList<Long> ids = Member.borrowedIdsFromLine(line)
-        //          برای هر id: Book b = findBookById(id) ... m.addBorrowedBooks(b)
-        //          members.add(m)
-        //      maxMemberId را نگه دار → IdGenerator.setMemberCounter(maxMemberId + 1)
+        File booksFile = new File(BOOKS_FILE);
+        if (booksFile.exists()) {
+            long maxBookId = 0;
+            String booksText = fileManager.loadText(BOOKS_FILE);
+            for (String line : booksText.split("\n")) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                Book book = Book.fromFileLine(line);
+                this.books.add(book);
+                maxBookId = Math.max(maxBookId, book.getId());
+            }
+            IdGenerator.setBookCounter(maxBookId + 1);
+        }
+
+        File membersFile = new File(MEMBERS_FILE);
+        if (membersFile.exists()) {
+            long maxMemberId = 0;
+            String membersText = fileManager.loadText(MEMBERS_FILE);
+            for (String line : membersText.split("\n")) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                Member member = Member.fromFileLine(line);
+                for (long bookId : Member.borrowedIdsFromLine(line)) {
+                    Book book = this.findBookById(bookId);
+                    if (book == null) {
+                        throw new LibraryException("Member " + member.getId()
+                                + " refers to a missing book: " + bookId);
+                    }
+                    member.addBorrowedBooks(book);
+                }
+                this.members.add(member);
+                maxMemberId = Math.max(maxMemberId, member.getId());
+            }
+            IdGenerator.setMemberCounter(maxMemberId + 1);
+        }
     }
-
 
 }
