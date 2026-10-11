@@ -20,9 +20,7 @@ public class FileManager {
             while ((line = reader.readLine()) != null) {
                 content.append(line).append("\n");
             }
-
             return  content.toString();
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

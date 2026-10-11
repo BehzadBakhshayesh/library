@@ -1,5 +1,6 @@
 package library;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;

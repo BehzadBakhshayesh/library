@@ -8,8 +8,10 @@ public class Library {
     private ArrayList<Member> members = new ArrayList<>();
 
     public void addBook(String title, String author, int year) {
-        Book newBook = new Book( title, author, year);
+        Book newBook = new Book(title, author, year);
         this.books.add(newBook);
+        FileManager fileManager = new FileManager();
+        System.out.println(fileManager.loadText("books.txt"));
     }
 
     public Book findBookById(long id) {
@@ -149,7 +151,6 @@ public class Library {
     }
 
     public void returnBook(long bookId, long memberId) {
-
         Book foundBook = this.findBookById(bookId);
         if (foundBook == null) {
             throw new LibraryException("Book not found!");
@@ -168,4 +169,38 @@ public class Library {
         foundMember.removeBorrowedBook(foundBook);
         System.out.println("Book returned successfully!");
     }
+
+    public void save() {
+        FileManager fileManager = new FileManager();
+        StringBuilder booksText = new StringBuilder();
+        StringBuilder membersText = new StringBuilder();
+        for (Book b : books) {
+            booksText.append(b.toFileLine()).append("\n");
+        }
+        for (Member m : members) {
+            membersText.append(m.toFileLine()).append("\n");
+        }
+        fileManager.saveText("books.txt", booksText.toString());
+        fileManager.saveText("members.txt", membersText.toString());
+    }
+
+    public void load() {
+        FileManager fileManager = new FileManager();
+        // 1. اگر books.txt وجود دارد:
+        //      books.clear()
+        //      متن را بخوان، به خطوط بشکن، خطوط خالی را رد کن
+        //      برای هر خط: Book.fromFileLine(line) → books.add(...)
+        //      maxBookId را نگه دار → IdGenerator.setBookCounter(maxBookId + 1)
+
+        // 2. اگر members.txt وجود دارد:
+        //      members.clear()
+        //      برای هر خط:
+        //          Member m = Member.fromFileLine(line)
+        //          ArrayList<Long> ids = Member.borrowedIdsFromLine(line)
+        //          برای هر id: Book b = findBookById(id) ... m.addBorrowedBooks(b)
+        //          members.add(m)
+        //      maxMemberId را نگه دار → IdGenerator.setMemberCounter(maxMemberId + 1)
+    }
+
+
 }

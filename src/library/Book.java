@@ -9,20 +9,21 @@ public class Book {
     private boolean isAvailable;
 
     public Book(String title, String author, int year) {
-        if (title == null || title.isBlank()) {
-            throw new LibraryException("Title can not be blank");
-        }
-        if (author == null || author.isBlank()) {
-            throw new LibraryException("Author can not be blank");
-        }
-        if (year < 1 || year > Year.now().getValue()) {
-            throw new LibraryException("Year is not valid");
-        }
+        validateParams(title, author, year);
         this.id = IdGenerator.generateBookId();
         this.title = title;
         this.author = author;
         this.year = year;
         this.isAvailable = true;
+    }
+
+    public Book(long id, String title, String author, int year, boolean isAvailable) {
+        validateParams(title, author, year);
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.year = year;
+        this.isAvailable = isAvailable;
     }
 
     public long getId() {
@@ -68,6 +69,40 @@ public class Book {
 
     public void setIsAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
+    }
+
+    private static void validateParams(String title, String author, int year) {
+        if (title == null || title.isBlank()) {
+            throw new LibraryException("Title can not be blank");
+        }
+        if (author == null || author.isBlank()) {
+            throw new LibraryException("Author can not be blank");
+        }
+        if (year < 1 || year > Year.now().getValue()) {
+            throw new LibraryException("Year is not valid");
+        }
+    }
+
+    public String toFileLine() {
+        return this.id + "|" + this.title + "|" + this.author + "|" + this.year + "|" + this.isAvailable;
+    }
+
+    public static Book fromFileLine(String line) {
+        String[] parts = line.split("\\|", -1);
+        if (parts.length != 5) {
+            throw new LibraryException("Invalid book line: " + line);
+        }
+        try {
+            return new Book(
+                    Long.parseLong(parts[0].trim()),
+                    parts[1].trim(),
+                    parts[2].trim(),
+                    Integer.parseInt(parts[3].trim()),
+                    Boolean.parseBoolean(parts[4].trim())
+            );
+        } catch (NumberFormatException e) {
+            throw new LibraryException("Invalid number in book line: " + line);
+        }
     }
 
     @Override
