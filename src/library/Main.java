@@ -8,6 +8,13 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Library library = new Library();
+        try {
+            library.load();
+        } catch (LibraryException e) {
+            System.out.println("Could not load data: " + e.getMessage());
+            System.out.println("Exiting without saving to protect your files.");
+            return;
+        }
         Scanner input = new Scanner(System.in);
         System.out.println("===== Library System =====");
         String[] choices = {
@@ -191,6 +198,7 @@ public class Main {
                         int memberId = input.nextInt();
                         input.nextLine();
                         library.borrowBook(bookId, memberId);
+                        System.out.println("Book borrowed successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
@@ -217,7 +225,14 @@ public class Main {
                     }
                     break;
                 case 13:
-                    System.out.print("Goodbye!");
+                    try {
+                        library.save();
+                    } catch (LibraryException e) {
+                        System.out.println("Could not save data: " + e.getMessage());
+                        System.out.println("Fix the problem and choose Exit again.");
+                        break;
+                    }
+                    System.out.println("Goodbye!");
                     input.close();
                     return;
                 default:

@@ -1,6 +1,5 @@
 package library;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -24,13 +23,30 @@ public class Member {
         this.email = email;
     }
 
-    private static void validateParams(String name, String email) {
+    private static void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new LibraryException("Name can not be blank");
         }
-        if (!isValidEmail(email)) {
+        if (name.contains("|")) {
+            throw new LibraryException("The '|' character is not allowed");
+        }
+    }
+
+    private static void validateEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new LibraryException("Email can not be blank");
+        }
+        if (email.contains("|")) {
+            throw new LibraryException("The '|' character is not allowed");
+        }
+        if (!(email.contains("@") && email.contains("."))) {
             throw new LibraryException("Email is not valid");
         }
+    }
+
+    public static void validateParams(String name, String email) {
+        validateName(name);
+        validateEmail(email);
     }
 
     public long getId() {
@@ -42,9 +58,7 @@ public class Member {
     }
 
     public void setName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new LibraryException("Name can not be blank");
-        }
+        validateName(name);
         this.name = name;
     }
 
@@ -53,24 +67,19 @@ public class Member {
     }
 
     public void setEmail(String email) {
-        if (!isValidEmail(email)) {
-            throw new LibraryException("Email is not valid");
-        }
+        validateEmail(email);
         this.email = email;
     }
 
-    public static boolean isValidEmail(String email) {
-        return email != null
-                && !email.isBlank()
-                && email.contains("@")
-                && email.contains(".");
-    }
 
     public ArrayList<Book> borrowedBooks() {
         return new ArrayList<>(this.borrowedBooks);
     }
 
     public void addBorrowedBooks(Book book) {
+        if (borrowedBooks.contains(book)){
+            throw new LibraryException("This member already borrowed this book!");
+        }
         this.borrowedBooks.add(book);
     }
 

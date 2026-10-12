@@ -1,32 +1,24 @@
 package library;
 
-import java.io.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 
 public class FileManager {
     public void saveText(String path, String text) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, false))) {
-            writer.write(text);
-            writer.newLine();
+        try {
+            Files.writeString(Path.of(path), text);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new LibraryException("File error: " + e.getMessage());
         }
-
     }
 
     public String loadText(String path) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-            return  content.toString();
+        try {
+            return Files.readString(Path.of(path));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new LibraryException("File error: " + e.getMessage());
         }
-
     }
 }
-//FileManager fileManager= new FileManager();
-//fileManager.saveText("test.txt", "Hello world");
-//System.out.println(fileManager.loadText("test.txt"));

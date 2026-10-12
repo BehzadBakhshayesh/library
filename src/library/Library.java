@@ -5,16 +5,15 @@ import java.util.ArrayList;
 import java.time.Year;
 
 public class Library {
-    private final String BOOKS_FILE="books.txt";
-    private final String MEMBERS_FILE="members.txt";
+    private final String BOOKS_FILE = "books.txt";
+    private final String MEMBERS_FILE = "members.txt";
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Member> members = new ArrayList<>();
+    private FileManager fileManager = new FileManager();
 
     public void addBook(String title, String author, int year) {
         Book newBook = new Book(title, author, year);
         this.books.add(newBook);
-        FileManager fileManager = new FileManager();
-        System.out.println(fileManager.loadText("books.txt"));
     }
 
     public Book findBookById(long id) {
@@ -38,7 +37,7 @@ public class Library {
                 searchList.add(this.books.get(i));
             }
         }
-        return new ArrayList<>(searchList);
+        return searchList;
     }
 
     public void editBook(long bookId, String title, String author, int year) {
@@ -46,16 +45,7 @@ public class Library {
         if (foundBook == null) {
             throw new LibraryException("Book not found! Invalid ID.");
         }
-        if (title == null || title.isBlank()) {
-            throw new LibraryException("Title can not be blank");
-        }
-        if (author == null || author.isBlank()) {
-            throw new LibraryException("Author can not be blank");
-        }
-        if (year < 1 || year > Year.now().getValue()) {
-            throw new LibraryException("Year is not valid");
-        }
-
+        Book.validateParams(title,author,year);
         foundBook.setTitle(title);
         foundBook.setAuthor(author);
         foundBook.setYear(year);
@@ -94,7 +84,7 @@ public class Library {
                 searchList.add(this.members.get(i));
             }
         }
-        return new ArrayList<Member>(searchList);
+        return searchList;
     }
 
     public Member findMemberById(long id) {
@@ -111,16 +101,10 @@ public class Library {
         if (foundMember == null) {
             throw new LibraryException("Member not found!");
         }
-        if (name == null || name.isBlank()) {
-            throw new LibraryException("Name can not be blank");
-        }
-        if (!Member.isValidEmail(email)) {
-            throw new LibraryException("Email is not valid");
-        }
+        Member.validateParams(name,email);
         foundMember.setName(name);
         foundMember.setEmail(email);
         System.out.println("Member edited successfully!");
-
     }
 
     public void deleteMember(long id) {
@@ -148,8 +132,8 @@ public class Library {
         if (foundMember == null) {
             throw new LibraryException("Member not found!");
         }
-        foundBook.setIsAvailable(false);
         foundMember.addBorrowedBooks(foundBook);
+        foundBook.setIsAvailable(false);
         System.out.println("Book borrowed successfully!");
     }
 
@@ -174,7 +158,6 @@ public class Library {
     }
 
     public void save() {
-        FileManager fileManager = new FileManager();
         StringBuilder booksText = new StringBuilder();
         StringBuilder membersText = new StringBuilder();
         for (Book b : books) {
@@ -183,12 +166,11 @@ public class Library {
         for (Member m : members) {
             membersText.append(m.toFileLine()).append("\n");
         }
-        fileManager.saveText("books.txt", booksText.toString());
-        fileManager.saveText("members.txt", membersText.toString());
+        fileManager.saveText(BOOKS_FILE, booksText.toString());
+        fileManager.saveText(MEMBERS_FILE, membersText.toString());
     }
 
     public void load() {
-        FileManager fileManager = new FileManager();
         this.books.clear();
         this.members.clear();
 

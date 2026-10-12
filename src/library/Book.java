@@ -1,4 +1,5 @@
 package library;
+
 import java.time.Year;
 
 public class Book {
@@ -35,9 +36,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        if (title == null || title.isBlank()) {
-            throw new LibraryException("Title can not be blank");
-        }
+        validateTitle(title);
         this.title = title;
     }
 
@@ -46,9 +45,7 @@ public class Book {
     }
 
     public void setAuthor(String author) {
-        if (author == null || author.isBlank()) {
-            throw new LibraryException("Author can not be blank");
-        }
+        validateAuthor(author);
         this.author = author;
     }
 
@@ -57,9 +54,7 @@ public class Book {
     }
 
     public void setYear(int year) {
-        if (year < 1 || year > Year.now().getValue()) {
-            throw new LibraryException("Year is not valid");
-        }
+        validateYear(year);
         this.year = year;
     }
 
@@ -71,16 +66,34 @@ public class Book {
         this.isAvailable = isAvailable;
     }
 
-    private static void validateParams(String title, String author, int year) {
+    private static void validateTitle(String title) {
         if (title == null || title.isBlank()) {
             throw new LibraryException("Title can not be blank");
         }
+        if (title.contains("|")) {
+            throw new LibraryException("The '|' character is not allowed");
+        }
+    }
+
+    private static void validateAuthor(String author) {
         if (author == null || author.isBlank()) {
             throw new LibraryException("Author can not be blank");
         }
+        if (author.contains("|")) {
+            throw new LibraryException("The '|' character is not allowed");
+        }
+    }
+
+    private static void validateYear(int year) {
         if (year < 1 || year > Year.now().getValue()) {
             throw new LibraryException("Year is not valid");
         }
+    }
+
+    public static void validateParams(String title, String author, int year) {
+        validateTitle(title);
+        validateAuthor(author);
+        validateYear(year);
     }
 
     public String toFileLine() {
