@@ -57,6 +57,7 @@ public class Main {
                         int year = input.nextInt();
                         input.nextLine();
                         library.addBook(title, author, year);
+                        System.out.println("Book added successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid year! Please enter a number.");
                         input.nextLine();
@@ -101,6 +102,7 @@ public class Main {
                         int selectedYear = input.nextInt();
                         input.nextLine();
                         library.editBook(bookId, selectedTitle, selectedAuthor, selectedYear);
+                        System.out.println("Book edit successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
@@ -114,6 +116,7 @@ public class Main {
                         int bookId = input.nextInt();
                         input.nextLine();
                         library.deleteBook(bookId);
+                        System.out.println("Book deleted successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid book number! Please enter a number.");
                         input.nextLine();
@@ -129,6 +132,7 @@ public class Main {
                         System.out.print("Enter email: ");
                         String email = input.nextLine();
                         library.addMember(name, email);
+                        System.out.println("Member added successfully!");
                     } catch (LibraryException e) {
                         System.out.println(e.getMessage());
                     }
@@ -167,6 +171,7 @@ public class Main {
                         System.out.print("Edit your Member Email: ");
                         String editMemberEmail = input.nextLine();
                         library.editMember(editMemberId, editMemberName, editMemberEmail);
+                        System.out.println("Member edited successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();
@@ -181,6 +186,7 @@ public class Main {
                         int removeMemberId = input.nextInt();
                         input.nextLine();
                         library.deleteMember(removeMemberId);
+                        System.out.println("Member deleted successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid ID! Please enter a number.");
                         input.nextLine();
@@ -216,6 +222,7 @@ public class Main {
                         int memberId = input.nextInt();
                         input.nextLine();
                         library.returnBook(bookId, memberId);
+                        System.out.println("Book returned successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();

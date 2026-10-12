@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.time.Year;
 
 public class Library {
-    private final String BOOKS_FILE = "books.txt";
-    private final String MEMBERS_FILE = "members.txt";
+    private static final String BOOKS_FILE = "books.txt";
+    private static final String MEMBERS_FILE = "members.txt";
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Member> members = new ArrayList<>();
     private FileManager fileManager = new FileManager();
@@ -50,7 +50,6 @@ public class Library {
         foundBook.setAuthor(author);
         foundBook.setYear(year);
         System.out.println(foundBook);
-        System.out.println("Book edit successfully!");
 
     }
 
@@ -60,11 +59,9 @@ public class Library {
             throw new LibraryException("An error occurred while deleting the book! The number is invalid.");
         }
         if (!foundBook.isAvailable()) {
-            throw new LibraryException("Book is already borrowed!");
+            throw new LibraryException("Cannot delete a borrowed book!");
         }
         this.books.remove(foundBook);
-        System.out.println("Book deleted successfully!");
-
     }
 
     public void addMember(String name, String email) {
@@ -104,7 +101,6 @@ public class Library {
         Member.validateParams(name,email);
         foundMember.setName(name);
         foundMember.setEmail(email);
-        System.out.println("Member edited successfully!");
     }
 
     public void deleteMember(long id) {
@@ -116,7 +112,6 @@ public class Library {
             throw new LibraryException("The member has borrowed a book!");
         }
         this.members.remove(foundMember);
-        System.out.println("Member deleted successfully!");
     }
 
     public void borrowBook(long bookId, long memberId) {
@@ -134,7 +129,6 @@ public class Library {
         }
         foundMember.addBorrowedBooks(foundBook);
         foundBook.setIsAvailable(false);
-        System.out.println("Book borrowed successfully!");
     }
 
     public void returnBook(long bookId, long memberId) {
@@ -154,7 +148,6 @@ public class Library {
         }
         foundBook.setIsAvailable(true);
         foundMember.removeBorrowedBook(foundBook);
-        System.out.println("Book returned successfully!");
     }
 
     public void save() {
@@ -205,6 +198,7 @@ public class Library {
                                 + " refers to a missing book: " + bookId);
                     }
                     member.addBorrowedBooks(book);
+
                 }
                 this.members.add(member);
                 maxMemberId = Math.max(maxMemberId, member.getId());
