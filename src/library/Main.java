@@ -101,8 +101,9 @@ public class Main {
                         System.out.print("Edit your book year: ");
                         int selectedYear = input.nextInt();
                         input.nextLine();
-                        library.editBook(bookId, selectedTitle, selectedAuthor, selectedYear);
-                        System.out.println("Book edit successfully!");
+                        Book edited = library.editBook(bookId, selectedTitle, selectedAuthor, selectedYear);
+                        System.out.println(edited);
+                        System.out.println("Book edited successfully!");
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input! Please enter a number.");
                         input.nextLine();

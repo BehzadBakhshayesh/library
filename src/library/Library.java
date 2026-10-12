@@ -2,7 +2,6 @@ package library;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.time.Year;
 
 public class Library {
     private static final String BOOKS_FILE = "books.txt";
@@ -40,17 +39,16 @@ public class Library {
         return searchList;
     }
 
-    public void editBook(long bookId, String title, String author, int year) {
+    public Book editBook(long bookId, String title, String author, int year) {
         Book foundBook = this.findBookById(bookId);
         if (foundBook == null) {
             throw new LibraryException("Book not found! Invalid ID.");
         }
-        Book.validateParams(title,author,year);
+        Book.validateParams(title, author, year);
         foundBook.setTitle(title);
         foundBook.setAuthor(author);
         foundBook.setYear(year);
-        System.out.println(foundBook);
-
+        return foundBook;
     }
 
     public void deleteBook(long bookId) {
